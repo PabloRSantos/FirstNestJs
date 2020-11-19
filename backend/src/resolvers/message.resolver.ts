@@ -3,7 +3,7 @@ import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/g
 import Message from 'src/db/models/message.entity';
 import User from 'src/db/models/user.entity';
 import RepoService from 'src/repo.service';
-import MessageInput from './input/message.input';
+import {MessageInput, DeleteMessageInput } from './input/message.input';
 
 @Resolver(() => Message)
 class MessageResolver {
@@ -25,6 +25,17 @@ class MessageResolver {
   @Query(() => Message, { nullable: true })
   public async getMessage(@Args('id') id: number): Promise<Message> {
       return this.repoService.messageRepo.findOne(id)
+  }
+
+  @Mutation(() => Message, { nullable: true })
+  public async deleteMessage(@Args('data') input: DeleteMessageInput): Promise<Message> {
+    const message = await this.repoService.messageRepo.findOne({ id: input.id, userId: input.userId })
+
+    if(!message) throw new Error('You are not authorized to delete this message')
+
+    await this.repoService.messageRepo.remove(message)
+
+    return message
   }
 
   @Mutation(() => Message)
