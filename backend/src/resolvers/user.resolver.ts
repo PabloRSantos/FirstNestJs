@@ -10,18 +10,28 @@ class UserResolver {
 
   @Query(() => [User])
   public async getUsers(): Promise<User[]> {
-    return this.repoService.userRepo.find();
+    return await this.repoService.userRepo.find();
   }
   @Query(() => User, {nullable: true})
   public async getUser(@Args('id') id: number): Promise<User> {
-    return  this.repoService.userRepo.findOne(id);
+    return await this.repoService.userRepo.findOne(id);
   }
 
   @Mutation(() => User)
-  public async createUser(@Args('data') input: UserInput): 
+  public async createOrLoginUser(@Args('data') input: UserInput): 
     Promise<User> {
-      const user = this.repoService.userRepo.create({ email: input.email });
-      return this.repoService.userRepo.save(user);
+      let user = await this.repoService.userRepo.findOne({
+        email: input.email.toLocaleLowerCase().trim()
+      })
+
+      if(!user) {
+        user = this.repoService.userRepo.create({ 
+          email: input.email.toLocaleLowerCase().trim()
+        });
+
+        this.repoService.userRepo.save(user);
+      }
+      return user
   }
 }
 export default UserResolver;
