@@ -1,9 +1,18 @@
-
-import { Args, Mutation, Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import { 
+   Args,
+   Mutation,
+   Parent,
+   Query,
+   ResolveField,
+   Resolver,
+   Subscription } from '@nestjs/graphql';
 import Message from 'src/db/models/message.entity';
 import User from 'src/db/models/user.entity';
 import RepoService from 'src/repo.service';
+import { PubSub } from 'graphql-subscriptions';
 import {MessageInput, DeleteMessageInput } from './input/message.input';
+
+const pubSub = new PubSub()
 
 @Resolver(() => Message)
 class MessageResolver {
@@ -13,6 +22,7 @@ class MessageResolver {
   public async getMessages(): Promise<Message[]> {
     return this.repoService.messageRepo.find();
   }
+
   @Query(() => Message, {nullable: true})
   public async getMessagesFromUser(@Args('user_id') userId: number): Promise<Message[]> {
     return  this.repoService.messageRepo.find({
@@ -45,7 +55,18 @@ class MessageResolver {
           userId: input.userId
         });
 
-      return this.repoService.messageRepo.save(message);
+      const response = await this.repoService.messageRepo.save(message);
+
+      pubSub.publish('messageAdded', {
+        messageAdded: message
+      })
+
+      return response
+  }
+
+  @Subscription(() => Message)
+  public messageAdded() {
+    return pubSub.asyncIterator('messageAdded')
   }
 
   @ResolveField(() => User, { name: 'user' })

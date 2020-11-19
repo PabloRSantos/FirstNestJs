@@ -20,7 +20,8 @@ const gqlImports = [
     ...gqlImports,
     GraphQLModule.forRoot({
       autoSchemaFile: 'schema.gql', // armazena os resolvers nesse arquivo
-      playground: true
+      playground: true,
+      installSubscriptionHandlers: true
     })
   ],
 })
