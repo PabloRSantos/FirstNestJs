@@ -1,4 +1,3 @@
-
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import User from 'src/db/models/user.entity';
 import RepoService from 'src/repo.service';
@@ -25,11 +24,11 @@ class UserResolver {
       })
 
       if(!user) {
-        user = this.repoService.userRepo.create({ 
+        const newUser = this.repoService.userRepo.create({ 
           email: input.email.toLocaleLowerCase().trim()
         });
 
-        this.repoService.userRepo.save(user);
+        user = await this.repoService.userRepo.save(newUser);
       }
       return user
   }
