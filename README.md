@@ -59,12 +59,6 @@ O projeto foi desenvolvido utilizando as seguintes tecnologias
    <img src="./.github/messages.png" >
 </div>
 
-# :eyes: Link Website
-Você pode acessar o website em:   
-👉  https://proffy08.netlify.app/ 
-
-[![Netlify Status](https://api.netlify.com/api/v1/badges/6b13a4b1-96e1-4ff3-86e3-4c9b981c77cf/deploy-status)](https://proffy08.netlify.app)      
-
 <a id="como-usar"></a>
 
 # :construction_worker: Como usar
