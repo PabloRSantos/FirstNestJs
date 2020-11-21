@@ -12,6 +12,8 @@ export default createGlobalStyle`
     background-color: #282a36;
     -webkit-font-smoothing: antialiased;
     font: 14px 'Roboto', sans-serif;
+    max-height: 100vh;
+    overflow-y: hidden;
   }
   body, input, button {
     font: 14px 'Roboto', sans-serif;
@@ -22,4 +24,5 @@ export default createGlobalStyle`
   button {
     cursor: pointer;
   } 
+
 `;
